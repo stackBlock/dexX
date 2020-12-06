@@ -1,0 +1,26 @@
+{
+  "name": "dexx",
+  "version": "1.0.0",
+  "description": "simple exchange",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stackBlock/dexX.git"
+  },
+  "author": "Anthony Stachowitz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stackBlock/dexX/issues"
+  },
+  "homepage": "https://github.com/stackBlock/dexX#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.3.0",
+    "@openzeppelin/test-helpers": "^0.5.9"
+  }
+}

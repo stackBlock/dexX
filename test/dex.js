@@ -8,6 +8,9 @@ const Dai = artifacts.require("mocks/Dai.sol");
 const Bat = artifacts.require("mocks/Bat.sol");
 const Rep = artifacts.require("mocks/Rep.sol");
 const Zrx = artifacts.require("mocks/Zrx.sol");
+const Ada = artifacts.require("mocks/Ada.sol");
+const Eco = artifacts.require("mocks/Eco.sol");
+const Van = artifacts.require("mocks/Van.sol");
 const Dex = artifacts.require("Dex.sol");
 
 // variable to make code more readable instead
@@ -18,7 +21,7 @@ const cType = {
 };
 
 contract("Dex", (accounts) => {
-  let dai, bat, rep, zrx, dex;
+  let dai, bat, rep, zrx, ada, eco, van, dex;
 
   // creating the traders acct 1 and acct 2
   // acct 0 is left for admin
@@ -32,18 +35,29 @@ contract("Dex", (accounts) => {
   const BAT = web3.utils.fromAscii("BAT");
   const REP = web3.utils.fromAscii("REP");
   const ZRX = web3.utils.fromAscii("ZRX");
+  const ADA = web3.utils.fromAscii("ADA");
+  const ECO = web3.utils.fromAscii("ECO");
+  const VAN = web3.utils.fromAscii("VAN");
 
   beforeEach(async () => {
     dai = await Dai.new();
     bat = await Bat.new();
     rep = await Rep.new();
     zrx = await Zrx.new();
+    ada = await Ada.new();
+    eco = await Eco.new();
+    van = await Van.new();
     dex = await Dex.new();
 
+    // using addToken function to add tokens
+    // admin account
     await dex.addToken(DAI, dai.address);
     await dex.addToken(BAT, bat.address);
     await dex.addToken(REP, rep.address);
     await dex.addToken(ZRX, zrx.address);
+    await dex.addToken(ADA, ada.address);
+    await dex.addToken(ECO, eco.address);
+    await dex.addToken(VAN, van.address);
 
     // giving each trader 1000 of each token
     const amount = web3.utils.toWei("1000");
@@ -56,11 +70,17 @@ contract("Dex", (accounts) => {
     await seedTokenBalance(bat, trader1);
     await seedTokenBalance(rep, trader1);
     await seedTokenBalance(zrx, trader1);
+    await seedTokenBalance(ada, trader1);
+    await seedTokenBalance(eco, trader1);
+    await seedTokenBalance(van, trader1);
 
     await seedTokenBalance(dai, trader2);
     await seedTokenBalance(bat, trader2);
     await seedTokenBalance(rep, trader2);
     await seedTokenBalance(zrx, trader2);
+    await seedTokenBalance(ada, trader2);
+    await seedTokenBalance(eco, trader2);
+    await seedTokenBalance(van, trader2);
   });
 
   it("should deposit tokens", async () => {

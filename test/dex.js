@@ -5,9 +5,9 @@ const { web3 } = require("@openzeppelin/test-helpers/src/setup");
 
 // importing coin contracts
 const Dai = artifacts.require("mocks/Dai.sol");
-const Bat = artifacts.require("mocks/Bat.sol");
-const Rep = artifacts.require("mocks/Rep.sol");
-const Zrx = artifacts.require("mocks/Zrx.sol");
+const Rig = artifacts.require("mocks/Rig.sol");
+const Tun = artifacts.require("mocks/Tun.sol");
+const Gip = artifacts.require("mocks/Gip.sol");
 const Ada = artifacts.require("mocks/Ada.sol");
 const Eco = artifacts.require("mocks/Eco.sol");
 const Van = artifacts.require("mocks/Van.sol");
@@ -21,7 +21,7 @@ const cType = {
 };
 
 contract("Dex", (accounts) => {
-  let dai, bat, rep, zrx, ada, eco, van, dex;
+  let dai, rig, tun, gip, ada, eco, van, dex;
 
   // creating the traders acct 1 and acct 2
   // acct 0 is left for admin
@@ -32,18 +32,18 @@ contract("Dex", (accounts) => {
   // creating tickers
 
   const DAI = web3.utils.fromAscii("DAI");
-  const BAT = web3.utils.fromAscii("BAT");
-  const REP = web3.utils.fromAscii("REP");
-  const ZRX = web3.utils.fromAscii("ZRX");
+  const RIG = web3.utils.fromAscii("RIG");
+  const TUN = web3.utils.fromAscii("TUN");
+  const GIP = web3.utils.fromAscii("GIP");
   const ADA = web3.utils.fromAscii("ADA");
   const ECO = web3.utils.fromAscii("ECO");
   const VAN = web3.utils.fromAscii("VAN");
 
   beforeEach(async () => {
     dai = await Dai.new();
-    bat = await Bat.new();
-    rep = await Rep.new();
-    zrx = await Zrx.new();
+    rig = await Rig.new();
+    tun = await Tun.new();
+    gip = await Gip.new();
     ada = await Ada.new();
     eco = await Eco.new();
     van = await Van.new();
@@ -52,9 +52,9 @@ contract("Dex", (accounts) => {
     // using addToken function to add tokens
     // admin account
     await dex.addToken(DAI, dai.address);
-    await dex.addToken(BAT, bat.address);
-    await dex.addToken(REP, rep.address);
-    await dex.addToken(ZRX, zrx.address);
+    await dex.addToken(RIG, rig.address);
+    await dex.addToken(TUN, tun.address);
+    await dex.addToken(GIP, gip.address);
     await dex.addToken(ADA, ada.address);
     await dex.addToken(ECO, eco.address);
     await dex.addToken(VAN, van.address);
@@ -67,17 +67,17 @@ contract("Dex", (accounts) => {
     };
 
     await seedTokenBalance(dai, trader1);
-    await seedTokenBalance(bat, trader1);
-    await seedTokenBalance(rep, trader1);
-    await seedTokenBalance(zrx, trader1);
+    await seedTokenBalance(rig, trader1);
+    await seedTokenBalance(tun, trader1);
+    await seedTokenBalance(gip, trader1);
     await seedTokenBalance(ada, trader1);
     await seedTokenBalance(eco, trader1);
     await seedTokenBalance(van, trader1);
 
     await seedTokenBalance(dai, trader2);
-    await seedTokenBalance(bat, trader2);
-    await seedTokenBalance(rep, trader2);
-    await seedTokenBalance(zrx, trader2);
+    await seedTokenBalance(rig, trader2);
+    await seedTokenBalance(tun, trader2);
+    await seedTokenBalance(gip, trader2);
     await seedTokenBalance(ada, trader2);
     await seedTokenBalance(eco, trader2);
     await seedTokenBalance(van, trader2);
@@ -163,22 +163,22 @@ contract("Dex", (accounts) => {
     );
 
     await dex.createLimitOrder(
-      // Buy 10 REP at price 10 per REP
-      REP,
+      // Buy 10 VAN at price 10 per TUN
+      VAN,
       web3.utils.toWei("10"),
       10,
       cType.buyTokens,
       { from: trader1 }
     );
 
-    let buyOrders = await dex.getOrders(REP, cType.buyTokens);
-    let sellOrders = await dex.getOrders(REP, cType.sellTokens);
+    let buyOrders = await dex.getOrders(VAN, cType.buyTokens);
+    let sellOrders = await dex.getOrders(VAN, cType.sellTokens);
     assert(buyOrders.length === 1);
     assert(buyOrders[0].trader === trader1);
 
     // we use padRight to insert
     // zero's to match solidity
-    assert(buyOrders[0].ticker === web3.utils.padRight(REP, 64));
+    assert(buyOrders[0].ticker === web3.utils.padRight(VAN, 64));
     assert(buyOrders[0].price === "10");
     assert(buyOrders[0].amount === web3.utils.toWei("10"));
     assert(sellOrders.length === 0);
@@ -192,16 +192,16 @@ contract("Dex", (accounts) => {
     );
 
     await dex.createLimitOrder(
-      // Buy 10 REP at price of 11 per REP
-      REP,
+      // Buy 10 VAN at price of 11 per VAN
+      VAN,
       web3.utils.toWei("10"),
       11,
       cType.buyTokens,
       { from: trader2 }
     );
 
-    buyOrders = await dex.getOrders(REP, cType.buyTokens);
-    sellOrders = await dex.getOrders(REP, cType.sellTokens);
+    buyOrders = await dex.getOrders(VAN, cType.buyTokens);
+    sellOrders = await dex.getOrders(VAN, cType.sellTokens);
 
     // buy order was added to array
     assert(buyOrders.length === 2);
@@ -216,7 +216,7 @@ contract("Dex", (accounts) => {
     await dex.createLimitOrder(
       // this limit order should go last in array
       // it is the cheapest at 9
-      REP,
+      VAN,
       web3.utils.toWei("10"),
 
       // original 200 added to dex
@@ -226,8 +226,8 @@ contract("Dex", (accounts) => {
       { from: trader2 }
     );
 
-    buyOrders = await dex.getOrders(REP, cType.buyTokens);
-    sellOrders = await dex.getOrders(REP, cType.sellTokens);
+    buyOrders = await dex.getOrders(VAN, cType.buyTokens);
+    sellOrders = await dex.getOrders(VAN, cType.sellTokens);
 
     // array has 3 orders in it
     assert(buyOrders.length === 3);
@@ -260,8 +260,8 @@ contract("Dex", (accounts) => {
       "this token does not exist"
     );
 
-    let buyOrders = await dex.getOrders(REP, cType.buyTokens);
-    let sellOrders = await dex.getOrders(REP, cType.sellTokens);
+    let buyOrders = await dex.getOrders(TUN, cType.buyTokens);
+    let sellOrders = await dex.getOrders(TUN, cType.sellTokens);
     assert(buyOrders.length === 0);
     assert(sellOrders.length === 0);
   });
@@ -286,26 +286,26 @@ contract("Dex", (accounts) => {
       "cannot trade DAI"
     );
 
-    let buyOrders = await dex.getOrders(REP, cType.buyTokens);
-    let sellOrders = await dex.getOrders(REP, cType.sellTokens);
+    let buyOrders = await dex.getOrders(TUN, cType.buyTokens);
+    let sellOrders = await dex.getOrders(TUN, cType.sellTokens);
     assert(buyOrders.length === 0);
     assert(sellOrders.length === 0);
   });
 
   it("should not create limit order if not enough tokens", async () => {
     await dex.deposit(
-      // trader 1 deposits 100 REP
+      // trader 1 deposits 100 ADA
       web3.utils.toWei("100"),
-      REP,
+      ADA,
       { from: trader1 }
     );
 
     await expectRevert(
       dex.createLimitOrder(
-        // trader only owns 100 REP
-        // can not sell 110 REP
-        // balance is to low (100 REP)
-        REP,
+        // trader only owns 100 ADA
+        // can not sell 110 ADA
+        // balance is to low (100 ADA)
+        ADA,
         web3.utils.toWei("110"),
         10,
         cType.sellTokens,
@@ -325,8 +325,8 @@ contract("Dex", (accounts) => {
 
     await expectRevert(
       dex.createLimitOrder(
-        REP,
-        // trader onw trying to buy 12 REP
+        TUN,
+        // trader onw trying to buy 12 TUN
         // for 10 each. equals 120 DAI
         // trader only deposited 100 DAI
         web3.utils.toWei("12"),
@@ -348,8 +348,8 @@ contract("Dex", (accounts) => {
 
     await dex.createLimitOrder(
       // second trader1 creates limit order
-      // 10 rep at 10/coin
-      REP,
+      // 10 tun at 10/coin
+      TUN,
       web3.utils.toWei("10"),
       10,
       cType.buyTokens,
@@ -357,32 +357,32 @@ contract("Dex", (accounts) => {
     );
 
     await dex.deposit(
-      // third trader2 deposits 100 rep to contract
+      // third trader2 deposits 100 tun to contract
       web3.utils.toWei("100"),
-      REP,
+      TUN,
       { from: trader2 }
     );
 
     await dex.createMarketOrder(
       // last trader2 creates a market order
-      // to sell 5 rep
-      REP,
+      // to sell 5 tun
+      TUN,
       web3.utils.toWei("5"),
       cType.sellTokens,
       { from: trader2 }
     );
 
     const trader1DAI = await dex.traderBalances(trader1, DAI);
-    const trader1REP = await dex.traderBalances(trader1, REP);
+    const trader1TUN = await dex.traderBalances(trader1, TUN);
     const trader2DAI = await dex.traderBalances(trader2, DAI);
-    const trader2REP = await dex.traderBalances(trader2, REP);
+    const trader2TUN = await dex.traderBalances(trader2, TUN);
 
-    const orders = await dex.getOrders(REP, cType.buyTokens);
+    const orders = await dex.getOrders(TUN, cType.buyTokens);
     assert(orders[0].filled === web3.utils.toWei("5"));
     assert(trader1DAI.toString() === web3.utils.toWei("50"));
-    assert(trader1REP.toString() === web3.utils.toWei("5"));
+    assert(trader1TUN.toString() === web3.utils.toWei("5"));
     assert(trader2DAI.toString() === web3.utils.toWei("50"));
-    assert(trader2REP.toString() === web3.utils.toWei("95"));
+    assert(trader2TUN.toString() === web3.utils.toWei("95"));
   });
 
   it("should not create market order for unknown token", async () => {
@@ -390,7 +390,7 @@ contract("Dex", (accounts) => {
       dex.createMarketOrder(
         // trader1 trying to create market order
         // with unsupported token
-        web3.utils.fromAscii("ADA"),
+        web3.utils.fromAscii("CRO"),
         web3.utils.toWei("5"),
         cType.sellTokens,
         { from: trader1 }
@@ -414,17 +414,17 @@ contract("Dex", (accounts) => {
 
   it("should not create a market order not enough tokens to fill", async () => {
     await dex.deposit(
-      // trader 2 is depositing 100 REP
+      // trader 2 is depositing 100 TUN
       web3.utils.toWei("100"),
-      REP,
+      TUN,
       { from: trader2 }
     );
 
     await expectRevert(
       dex.createMarketOrder(
         // trader 2 trying to take out
-        // more rep then she has
-        REP,
+        // more tun then she has
+        TUN,
         web3.utils.toWei("101"),
         cType.sellTokens,
         { from: trader2 }

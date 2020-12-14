@@ -1,2 +1,2 @@
 # dexX
-dex exchange
+dex exchange for Emurgo Class 

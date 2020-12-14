@@ -263,8 +263,8 @@ contract Dex {
             );
             if (side == Side.sellTokens) {
                 // these are correcting the amount of tokens
-                // the trader has after they buy or sell
-                // so it looks very jumbled because I used
+                // the trader has after they buy or sell.
+                // It looks very jumbled because I used
                 // a lot of SafeMath in here
                 traderBalances[msg.sender][ticker] = traderBalances[msg
                     .sender][ticker]
